@@ -1,6 +1,5 @@
 def booltobin(state):
-    state = bool(state)
-    return int(format(state, 'b'))
+    return int(format(bool(state), 'b'))
 
 def selffn(inputs, state, touched_list):
     return state
