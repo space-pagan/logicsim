@@ -60,7 +60,7 @@ An N-input OR gate
 
 ### notgate  
 A 1-input NOT gate
-* Initialize: `notgate([gatetype])`, ex: `orgate([basicio()])`
+* Initialize: `notgate([gatetype])`, ex: `notgate([basicio()])`
 * Set: None. Set inputs and call `.update([])`
 * Get: `.update([])`
 
