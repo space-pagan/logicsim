@@ -1,3 +1,6 @@
+# 	Author: 	Zoya Samsonov
+# 	Created: 	December 20, 2020
+
 SRC_DIR	:= src
 OBJ_DIR := obj
 BIN_DIR := bin
