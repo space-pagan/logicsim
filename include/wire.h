@@ -4,22 +4,20 @@
 class Wire {
     public:
         Wire() {}
-        Wire(Wire* in, Wire* out, bool initstate);
+        Wire(Wire* in, bool initstate);
         virtual void update(long tick);
-        bool getstate();
-        bool getstate_update(long tick);
-        void update_cons(Wire* in, Wire* out);
+        bool getstate(long tick);
+        void set_in(Wire* in);
 
     protected:
         Wire* input = nullptr;
-        Wire* output = nullptr;
         long last_updated = 0;
         bool state = false;
 };
 
 class IO : public Wire {
     public:
-        IO() {}
+        IO();
         IO(Wire* io);
         void write(bool state);
 };

@@ -1,21 +1,23 @@
 #ifndef GATE_H
 #define GATE_H
 
+#include <vector>
 #include "wire.h"
+
+bool andgate(std::vector<bool> ops);
+bool orgate(std::vector<bool> ops);
+bool notgate(std::vector<bool> ops);
+bool xorgate(std::vector<bool> ops);
 
 class Gate : public Wire {
     public:
         Gate() {}
-        Gate(int numin, Wire** ins, Wire* out, 
-                bool (*func)(int opsize, bool* ops));
-        ~Gate();
+        Gate(std::vector<Wire*> ins, bool (*func)(std::vector<bool> ops));
         void update(long tick) override;
 
     protected:
-        int numinputs;
-        Wire** inputs;
-        bool* instates;
-        bool (*update_func)(int opsize, bool* ops);
+        std::vector<Wire*> inputs;
+        bool (*update_func)(std::vector<bool> ops);
 };
 
 #endif

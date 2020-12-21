@@ -6,30 +6,42 @@
 #include "gate.h"
 #include "util.h"
 
-Gate::Gate(int numin, Wire** ins, Wire* out, 
-        bool (*func)(int opsize, bool* ops)) :
-    numinputs(numin),
-    update_func(func)
-{
-    this->output = out;
-    this->instates = new bool[numin];
-    this->inputs = new Wire*[numin];
-    for (int i : range(numin))
-        this->inputs[i] = ins[i];
+bool andgate(std::vector<bool> ops) {
+    for (bool b : ops) 
+        if (!b) return false;
+    return true;
 }
 
-Gate::~Gate() {
-    delete this->instates;
-    delete this->inputs;
+bool orgate(std::vector<bool> ops) {
+    for (bool b : ops)
+        if (b) return true;
+    return false;
 }
+
+bool notgate(std::vector<bool> ops) {
+    if (ops.size() != 1)
+        customerrorquit("Invalid number of arguments to NOT");
+    return !ops[0];
+}
+
+bool xorgate(std::vector<bool> ops) {
+    bool out = 0;
+    for (bool b : ops)
+        if (b) out = !out;
+    return out;
+}
+
+Gate::Gate(std::vector<Wire*> ins, bool (*func)(std::vector<bool> ops)) :
+    inputs(ins),
+    update_func(func)
+{}
 
 void Gate::update(long tick) {
     if (tick > this->last_updated) {
         this->last_updated = tick;
-        for (int i : range(this->numinputs)) {
-            this->inputs[i]->update(tick);
-            this->instates[i] = this->inputs[i]->getstate();
-        }
-        this->state = this->update_func(this->numinputs, this->instates);
+        std::vector<bool> states;
+        for (int i : range(this->inputs.size()))
+            states.push_back(this->inputs[i]->getstate(tick));
+        this->state = this->update_func(states);
     }
 }
