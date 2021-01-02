@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 #include "util.h"       //self func declarations
 
 void customerrorquit(std::string s) {
@@ -53,4 +54,13 @@ const int* range::begin() {
 // implements end condition for range iterator
 const int* range::end() {
     return &(this->data[this->size]);
+}
+
+std::vector<bool> getbits(int number, int bitlen) {
+    std::vector<bool> out;
+    for (int i : range(bitlen)) {
+        out.push_back( (number & (1 << i)) >> i );
+    }
+    std::reverse(std::begin(out), std::end(out));
+    return out;
 }

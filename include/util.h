@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <string>
+#include <vector>
 
 struct range {
     int* data;
@@ -15,5 +16,6 @@ struct range {
 };
 
 void customerrorquit(std::string s);
+std::vector<bool> getbits(int number, int bitlen);
 
 #endif
