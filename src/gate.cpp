@@ -34,14 +34,16 @@ bool xorgate(std::vector<bool> ops) {
 Gate::Gate(std::vector<Wire*> ins, bool (*func)(std::vector<bool> ops)) :
     inputs(ins),
     update_func(func)
-{}
+{
+    // std::cout << "G";
+}
 
 void Gate::update(long tick) {
-    if (tick > this->last_updated) {
-        this->last_updated = tick;
+    if (tick > last_updated) {
+        last_updated = tick;
         std::vector<bool> states;
-        for (int i : range(this->inputs.size()))
-            states.push_back(this->inputs[i]->getstate(tick));
-        this->state = this->update_func(states);
+        for (Wire* in : inputs)
+            states.push_back(in->getstate(tick));
+        state = update_func(states);
     }
 }

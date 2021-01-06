@@ -3,79 +3,68 @@
  */
 
 #include <iostream>
+#include <cmath>
+#include <algorithm>
+#include <unistd.h>
 #include "wire.h"
 #include "gate.h"
+#include "module.h"
 #include "util.h"
 
 int main(int argc, char** argv) {
-    IO nc;
-    IO io1; // A0
-    IO io2; // B0
-    IO io3; // A1
-    IO io4; // B1
-    IO io5; // A2
-    IO io6; // B2
-    IO io7; // A3
-    IO io8; // B3
-    IO io9, io10, io11, io12, io13; // O0-5
-    
-    Gate sum0 = Gate({&nc, &io1, &io2}, xorgate);
-    io9.set_in(&sum0);
 
-    Gate car0_1 = Gate({&io1, &io2}, xorgate);
-    Gate car0_2 = Gate({&io1, &io2}, andgate);
-    Gate car0_3 = Gate({&car0_1, &nc}, andgate);
-    Gate car0_4 = Gate({&car0_2, &car0_3}, orgate);
-    
-    Gate sum1 = Gate({&car0_4, &io3, &io4}, xorgate);
-    io10.set_in(&sum1);
-
-    Gate car1_1 = Gate({&io3, &io4}, xorgate);
-    Gate car1_2 = Gate({&io3, &io4}, andgate);
-    Gate car1_3 = Gate({&car1_1, &car0_4}, andgate);
-    Gate car1_4 = Gate({&car1_2, &car1_3}, orgate);
-
-    Gate sum2 = Gate({&car1_4, &io5, &io6}, xorgate);
-    io11.set_in(&sum2);
-
-    Gate car2_1 = Gate({&io5, &io6}, xorgate);
-    Gate car2_2 = Gate({&io5, &io6}, andgate);
-    Gate car2_3 = Gate({&car2_1, &car1_4}, andgate);
-    Gate car2_4 = Gate({&car2_2, &car2_3}, orgate);
-
-    Gate sum3 = Gate({&car2_4, &io7, &io8}, xorgate);
-    io12.set_in(&sum3);
-
-    Gate car3_1 = Gate({&io7, &io8}, xorgate);
-    Gate car3_2 = Gate({&io7, &io8}, andgate);
-    Gate car3_3 = Gate({&car3_1, &car2_4}, andgate);
-    Gate car3_4 = Gate({&car3_2, &car3_3}, orgate);
-    io13.set_in(&car3_4);
+    IO S, R;
+    Wire Q, Qnot;
+    Gate or1({&R, &Qnot}, orgate);
+    Gate not1({&or1}, notgate);
+    Q.set_in(&not1);
+    Gate or2({&Q, &S}, orgate);
+    Gate not2({&or2}, notgate);
+    Qnot.set_in(&not2);
 
     long tick = 1;
-    for (int A : range(16)) {
-        for (int B : range(16)) {
-            std::vector<bool> bitsA = getbits(A, 4);
-            std::vector<bool> bitsB = getbits(B, 4);
-            io1.write(bitsA[3]);
-            io2.write(bitsB[3]);
-            io3.write(bitsA[2]);
-            io4.write(bitsB[2]);
-            io5.write(bitsA[1]);
-            io6.write(bitsB[1]);
-            io7.write(bitsA[0]);
-            io8.write(bitsB[0]);
-            for (int i : range(4)) std::cout << bitsA[i];
-            std::cout << " + ";
-            for (int i : range(4)) std::cout << bitsB[i];
-            std::cout << " -> "
-                      << io13.getstate(tick)
-                      << io12.getstate(tick)
-                      << io11.getstate(tick)
-                      << io10.getstate(tick)
-                      << io9.getstate(tick)
-                      << "\n";
-            tick++;
-        }
+    srand(getpid());
+
+    while (tick++) {
+        S.write(rand() % 2);
+        R.write(rand() % 2);
+        std::cout << S.getstate(tick)
+                  << R.getstate(tick)
+                  << Q.getstate(tick)
+                  << Qnot.getstate(tick)
+                  << "\n";
+        sleep(1);
     }
+
+/*
+ * 8-BIT ADDER
+ *     int input_len = 16;
+ *     IO io[input_len];
+ *     IO nc;
+ * 
+ *     Module fa[input_len / 2];
+ *     Module out;
+ *     for (int i : range(input_len / 2)) {
+ *         fa[i] = fulladder(
+ *                 &io[input_len / 2 - 1 - i], 
+ *                 &io[input_len - 1 - i], 
+ *                 i > 0 ? fa[i-1].outputs[0] : &nc);
+ *         out.add_updateable(&fa[i]);
+ *         out.add_output(fa[i].outputs[1]);
+ *     }
+ *     out.add_output(fa[input_len / 2 - 1].outputs[0]);
+ *     std::reverse(out.outputs.begin(), out.outputs.end());
+ * 
+ *     for (int i : range(pow(2, input_len))) {
+ *         std::vector<bool> bits = getbits(i, input_len);
+ *         for (int j : range(input_len)) io[j].write(bits[j]);
+ *         out.update(i + 1);
+ *         std::cout << bitstring(bits).substr(0, input_len / 2)
+ *                   << " + "
+ *                   << bitstring(bits).substr(input_len / 2, input_len / 2)
+ *                   << " -> "
+ *                   << bitstring(out.outstates)
+ *                   << "\n";
+ *     }
+ */
 }

@@ -64,3 +64,9 @@ std::vector<bool> getbits(int number, int bitlen) {
     std::reverse(std::begin(out), std::end(out));
     return out;
 }
+
+std::string bitstring(std::vector<bool> bits) {
+    std::string out;
+    for (bool bit : bits) out += std::to_string(bit);
+    return out;
+}

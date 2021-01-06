@@ -17,5 +17,6 @@ struct range {
 
 void customerrorquit(std::string s);
 std::vector<bool> getbits(int number, int bitlen);
+std::string bitstring(std::vector<bool> bits);
 
 #endif

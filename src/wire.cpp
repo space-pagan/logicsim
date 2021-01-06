@@ -11,19 +11,19 @@ Wire::Wire(Wire* in, bool initstate) :
 {}
 
 void Wire::update(long tick) {
-    if (tick > this->last_updated) {
-        this->last_updated = tick;
-        this->state = this->input->getstate(tick);
+    if (tick > last_updated) {
+        last_updated = tick;
+        state = input->getstate(tick);
     }
 }
 
 bool Wire::getstate(long tick) {
-    this->update(tick);
-    return this->state;
+    update(tick);
+    return state;
 }
 
 void Wire::set_in(Wire* in) {
-    this->input = in;
+    input = in;
 }
 
 IO::IO() :
