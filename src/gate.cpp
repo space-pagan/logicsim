@@ -24,6 +24,14 @@ bool notgate(std::vector<bool> ops) {
     return !ops[0];
 }
 
+bool nandgate(std::vector<bool> ops) {
+    return !andgate(ops);
+}
+
+bool norgate(std::vector<bool> ops) {
+    return !orgate(ops);
+}
+
 bool xorgate(std::vector<bool> ops) {
     bool out = 0;
     for (bool b : ops)
@@ -31,12 +39,14 @@ bool xorgate(std::vector<bool> ops) {
     return out;
 }
 
+bool xnorgate(std::vector<bool> ops) {
+    return !xorgate(ops);
+}
+
 Gate::Gate(std::vector<Wire*> ins, bool (*func)(std::vector<bool> ops)) :
     inputs(ins),
     update_func(func)
-{
-    // std::cout << "G";
-}
+{}
 
 void Gate::update(long tick) {
     if (tick > last_updated) {

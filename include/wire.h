@@ -5,6 +5,7 @@ class Wire {
     public:
         Wire() {}
         Wire(Wire* in, bool initstate);
+        virtual ~Wire() {};
         virtual void update(long tick);
         bool getstate(long tick);
         void set_in(Wire* in);
